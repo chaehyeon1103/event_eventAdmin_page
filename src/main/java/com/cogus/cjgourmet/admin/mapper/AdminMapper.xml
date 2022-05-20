@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cogus.cjgourmet.admin.mapper.AdminMapper">
+	
+	<sql id="criteria">
+		<trim prefix="where (" suffix=")">
+			<choose>
+				<when test="sType == 'I'.toString()">
+					id like concat('%', #{keyword}, '%') and type = #{eatType}
+				</when>
+				<when test="sType == 'T'.toString()">
+					content like concat('%', #{keyword}, '%') and type = #{eatType}
+				</when>
+				<when test="sType == 'F'.toString()">
+					fileName like concat('%', #{keyword}, '%') and type = #{eatType}
+				</when>
+				<otherwise>
+					type = #{eatType}
+				</otherwise>
+				
+			</choose>
+		</trim>
+	</sql>
+	
+	<sql id="criteria2">
+		<trim prefix="where (" suffix=")">
+			<choose>
+				<when test="sType == 'I'.toString()">
+					id like concat('%', #{keyword}, '%')
+				</when>
+				<when test="sType == 'T'.toString()">
+					content like concat('%', #{keyword}, '%')
+				</when>
+				<when test="sType == 'F'.toString()">
+					fileName like concat('%', #{keyword}, '%')
+				</when>
+			</choose>
+		</trim>
+	</sql>
+	
+	<sql id="criteria3">
+		<trim prefix="where (" suffix=")">
+			<choose>
+				<when test="sType == 'I'.toString()">
+					id like concat('%', #{keyword}, '%') and type = #{eatType} and removeYN is null
+				</when>
+				<when test="sType == 'T'.toString()">
+					content like concat('%', #{keyword}, '%') and type = #{eatType} and removeYN is null
+				</when>
+				<when test="sType == 'F'.toString()">
+					fileName like concat('%', #{keyword}, '%') and type = #{eatType} and removeYN is null
+				</when>
+				<otherwise>
+					type = #{eatType} and removeYN is null
+				</otherwise>
+			</choose>
+		</trim>
+	</sql>
+	
+	<sql id="criteria4">
+		<trim prefix="where (" suffix=")">
+			<choose>
+				<when test="sType == 'I'.toString()">
+					id like concat('%', #{keyword}, '%') and removeYN is null
+				</when>
+				<when test="sType == 'T'.toString()">
+					content like concat('%', #{keyword}, '%') and removeYN is null
+				</when>
+				<when test="sType == 'F'.toString()">
+					fileName like concat('%', #{keyword}, '%') and removeYN is null
+				</when>
+				<otherwise>
+					removeYN is null
+				</otherwise>
+			</choose>
+		</trim>
+	</sql>
+	
+	<insert id="insert">
+		insert into cj_admin(adminId, password) 
+			values(#{adminId}, #{password})
+	</insert>
+	
+	<select id="idCheck" resultType="int">
+		select count(*) from cj_admin where adminId = #{adminId}
+	</select>
+	
+	<select id="login" resultType="com.cogus.cjgourmet.admin.vo.AdminVO">
+		select * from cj_admin where adminId = #{adminId}
+	</select>
+	
+	<select id="getCount" resultType="com.cogus.cjgourmet.admin.vo.EventCntVO">
+		select date_format(regDate, '%y-%m-%d') regDate, count(eno) cnt
+        from (
+          select id, min(regDate) regDate, eno 
+          from cj_event 
+          where removeYN is null 
+          group by id
+          ) x
+        group by date_format(regDate, '%y-%m-%d') with rollup
+	</select>
+	
+	<select id="getCount2" resultType="com.cogus.cjgourmet.admin.vo.EventCntVO">
+		select date_format(regDate, '%y-%m-%d') regDate, count(eno) cnt
+        from cj_event where removeYN is null 
+        group by date_format(regDate, '%y-%m-%d') with rollup
+	</select>
+	
+	<select id="getList" resultType="com.cogus.cjgourmet.event.vo.EventVO">
+		select * from (
+			select * from cj_event
+				<choose>
+					<when test='eatType != null and eatType != ""'>
+						<include refid="criteria"></include>
+					</when>
+					<otherwise>
+						<include refid="criteria2"></include>
+					</otherwise>
+				</choose>
+			) x
+		order by regDate desc
+		limit #{startCount}, #{perPage}
+	</select>
+	
+	<select id="getListCnt" resultType="int">
+		select count(*) from cj_event
+			<choose>
+				<when test='eatType != null and eatType != ""'>
+					<include refid="criteria"></include>
+				</when>
+				<otherwise>
+					<include refid="criteria2"></include>
+				</otherwise>
+			</choose>
+	</select>
+	
+	<update id="remove">
+		update cj_event set removeYN = "Y", removeTime = now() where eno = #{eno};
+	</update>
+	
+	<select id="getData" resultType="com.cogus.cjgourmet.event.vo.EventVO">
+		select * from cj_event 
+		<choose>
+			<when test='eatType != null and eatType != ""'>
+				<include refid="criteria3"></include>
+			</when>
+			<otherwise>
+				<include refid="criteria4"></include>
+			</otherwise>
+		</choose>
+		order by regDate desc
+	</select>
+</mapper>

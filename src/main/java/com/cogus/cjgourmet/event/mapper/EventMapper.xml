@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cogus.cjgourmet.event.mapper.EventMapper">
+	
+	<insert id="insert">
+		insert into cj_event(id, type, content, fileName, ipAddress) 
+			values(#{id}, #{type}, #{content}, #{fileName}, #{ipAddress})
+	</insert>
+	
+	<select id="selectList" resultType="com.cogus.cjgourmet.event.vo.EventVO">
+		select * from cj_event 
+		where removeYN is null 
+		order by regDate desc 
+		limit #{startCount}, #{perPage}
+	</select>
+	
+	<select id="selectCount" resultType="int">
+		select count(*) from cj_event where removeYN is null 
+	</select>
+</mapper>

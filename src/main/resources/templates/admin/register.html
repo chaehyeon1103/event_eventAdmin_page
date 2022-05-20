@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>cj 고메탕수육 관리자 회원가입</title>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+  <div class="main" style="height: 550px;">
+    <form action="/api/manager/add" method="post" class="form1">
+      <p class="sign">회원가입</p>
+      <div>
+        <input type="text" id="adminId" name="adminId" class="un " value="" placeholder="아이디를 입력해주세요">
+      </div>
+      <p class="idSuccess">사용 가능한 아이디입니다</p>
+      <p class="idFail">이미 사용중인 아이디입니다</p>
+      <div>
+        <input type="password" id="password" name="password" class="un " value="" placeholder="비밀번호를 입력해주세요">
+      </div>
+      <div>
+        <input type="password" id="pwdCheck" name="pwdCheck" class="un " value="" placeholder="비밀번호를 한 번 더 입력해주세요">
+      </div>
+      <p class="pwdSuccess">비밀번호가 일치합니다</p>
+      <p class="pwdFail">비밀번호가 일치하지 않습니다</p>
+      <button type="submit" id="btn_submit" class="submit" disabled>
+        가입하기
+      </button>
+    </form>
+  </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var pwdOK = false;
+      var idOK = false;
+      (function() {
+        $('.pwdSuccess').hide();
+        $('.pwdFail').hide();
+        $('.idSuccess').hide();
+        $('.idFail').hide();
+
+        $('input').keyup(function() {
+        	
+          //비밀번호 확인
+          var pwd = $('#password').val();
+          var pwdCheck = $('#pwdCheck').val();
+          
+          if(pwd != '' || pwdCheck != '') {
+        	//비밀번호 확인이 true라면
+            if(pwd == pwdCheck) {
+              $('.pwdFail').hide();
+              $('.pwdSuccess').show();
+              
+              pwdOK = true;
+              //id와 pw 모두 true일 때 diabled 해제
+              if(pwdOK == true & idOK == true) {
+                  $('#btn_submit').removeAttr('disabled');
+               }
+            } else {
+              $('.pwdSuccess').hide();
+              $('.pwdFail').show();
+              
+              pwdOK = false;
+              //id와 pw 둘 중 하나라도 false라면 다시 disabled 추가
+              if(pwdOK == false || idOK == false) {
+                  $('#btn_submit').attr('disabled', true);
+               }
+            }
+          }
+          
+          //아이디 중복 확인
+          var adminId = $('#adminId').val();
+          $.getJSON('/api/manager/idCheck?adminId='+adminId, function(result) {
+            
+        	//아이디가 중복된다면
+        	if(result >= 1) {
+              $('.idSuccess').hide();
+              $('.idFail').show();
+              
+              idOK = false;
+              //id와 pw 둘 중 하나라도 false라면 다시 disabled 추가
+              if(pwdOK == false || idOK == false) {
+                  $('#btn_submit').attr('disabled', true);
+               }
+            } else {
+              $('.idFail').hide();
+              $('.idSuccess').show();
+              
+              idOK = true;
+              //id와 pw 모두 true일 때 diabled 해제
+              if(pwdOK == true & idOK == true) {
+                  $('#btn_submit').removeAttr('disabled');
+                }
+            }
+          })
+        });
+      })();
+    });
+  </script>
+</body>
+</html>

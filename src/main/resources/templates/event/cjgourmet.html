@@ -1,0 +1,348 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>갓먹의 시대, 당신의 탕수육 취향은 이벤트</title>
+    <meta property="og:site_name" content="갓먹의 시대, 당신의 탕수육 취향은 이벤트"/>
+    <meta property="og:title" content="갓먹의 시대, 당신의 탕수육 취향은 이벤트"/>    
+    <meta property="og:description" content="당신의 탕수육 취향은?" />
+    <meta property="og:url" content="http://test.co.kr/cjgourmet" />
+    <meta property="og:image" content="http://test.co.kr/main/display/share_facebook.jpg" />
+    <meta property="og:type" content="website" />
+    <link rel="shortcut icon" href="" />
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="css/swiper.min.css">
+  	<link type="text/css" href="css/reset.css" rel="stylesheet" />
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="js/kakao.min.js"></script>
+    <!-- <script>
+        Kakao.init('f209cc22a70ff83d7743d45b5c89d57a');
+    </script> -->
+</head>
+<script>
+var _device=check_device();
+if(_device!=""){
+	location.href="./m/?<?=$_SERVER['QUERY_STRING']?>";
+}
+function check_device(){
+	var mobileKeyWords = new Array('iPhone', 'iPod', 'BlackBerry', 'Android', 'Windows CE', 'LG', 'MOT', 'SAMSUNG', 'SonyEricsson', 'Mobile', 'iP(hone|od|ad)', 'IEMobile', 'Dolphin');
+	var device_name = '';
+	for (var word in mobileKeyWords){
+	  if (navigator.userAgent.match(mobileKeyWords[word]) != null){
+		device_name = mobileKeyWords[word];
+		break;
+	  }
+	}
+	return device_name;
+}
+</script>
+<body>
+<div id="wrap">
+  <h1><a href="https://www.cj.co.kr/kr/index" target="_blank"><img src="images/logo.png" alt="CJ" /></a></h1>
+  <h2><img src="images/logo_gourmet.png" alt="gourmet" /></h2>
+
+  <header>
+    <div class="blind">
+      <p>3월, 갓 나온 녀석들이 찾아온다
+      “답은 정해져 있는데... 왜 싸우는 거예요?”</p>
+      <h1>갓먹의 시대 오직, 고메에서만</h1>
+    </div>
+  </header>
+
+  <section class="youtube">
+    <a href="">유튜브 영상 보기</a>
+  </section>
+
+  <section class="event">
+    <div  class="blind">
+      <h2>EVENT 당신의 탕수육 취향은?</h>
+      <div>“갓먹의 시대”
+        탕수육 취향 짤을 만들어 인증하고
+        갓먹 고메 중화요리 세트를 받아가세요!
+        추첨을 통해 총 100분에게
+        갓먹의 신세계를 선사합니다
+      </div>
+    </div>
+
+    <h2 class="blind">탕수육 취향 짤 만들기</h2>
+
+    <form id="addForm" action="/api/event/add" method="post">
+      <ul class="inbox">
+        <li class="id">
+            <input maxlength="30" id="nicname" name="nicname" type="text" placeholder="@인스타그램 아이디입력" />
+        </li>
+        <li class="select">
+          <input type="text" id="type" name="type" class="selbox" value="탕수육의 종결자 갓먹" readonly>
+          <!-- <p class="selbox">탕수육의 종결자 갓먹</p> -->
+          <dl style="display:none">
+            <dd>탕수육의 종결자 갓먹</dd>
+            <dd>찍는거라곤 셀카뿐인 부먹</dd>
+            <dd>붓는거라곤 곗돈뿐인 찍먹</dd>
+            <dd>뱃속에선 다 똑같다는 다먹</dd>
+            <dd>나는 탕수육에 진심이야 갓먹</dd>
+            <dd>찌익지이마아 부먹</dd>
+            <dd>바삭함이 생명이지 찍먹</dd>
+            <dd>아무거나 콜 다먹</dd>
+          </dl>
+        </li>
+        <li class="txt">
+            <input maxlength="20" id="txt" name="txt" type="text" placeholder="예시) 태초에 탕수육은 갓 만들어 먹었다" />
+        </li>
+      </ul>
+    
+
+      <div class="blind">
+
+        <dl>
+          <dt>경품소개</dt>
+          <dd>5명 필립스 에어 프라이어 +
+          고메 중화요리 set</dd>
+          <dd>95명 고메 중화요리 set</dd>
+        </dl>
+
+      </div>
+
+
+      <!-- Swiper -->
+      <div class="image"><canvas class="result" width="600" height="600"></canvas></div>
+
+      <a href="" class="btn-complete">나만의 짤만들기 완료</a>
+    </section>
+
+    <section class="event_bot">
+      <div class="blind">
+        <p>참여 방법 및 이벤트 안내</p>
+
+        <dl>
+          <dt>이벤트 기간</dt>
+          <dd>2021. 03. 18(목) ~ 2021. 04. 17(토)</dd>
+        </dl>
+        <dl>
+          <dt>당첨자 발표</dt>
+          <dd>2021. 04. 23(금)</dd>
+        </dl>
+
+        <dl>
+          <dd>1. 나만의 탕수육 취향 짤 생성 후 다운로드</dd>
+          <dd>2. 필수 해시태그 포함하여 인스타그램에 업로드</dd>
+          <dd>3. 응모완료</dd>
+        </dl>
+      </div>
+
+      <p class="hashtag">
+        <span class="blind">#갓먹의시대 #갓먹고메 #고메탕수육 #탕수육취향짤</span>
+        <input id="clipboard" type="text" style="position:absolute;left:-9999px;" value="#갓먹의시대 #갓먹고메 #고메탕수육 #탕수육취향짤">
+        <a href="" class="btn-clipboard"></a>
+      </p>
+
+      <!-- <div class="sns">
+        <a href="" class="sns1"></a>
+        <a href="" class="sns2"></a>
+        <a href="" class="sns3"></a>
+        <a href="" class="sns4"></a>
+      </div> -->
+
+      <a href="https://www.instagram.com/" target="_blank" class="instagram">인스타그램 바로가기</a>
+      <a href="" class="sns">이벤트 공유하기</a>
+
+      <span class="blind">* 당첨자 발표는 고메 공식 인스타그램(@CJ.GOURMET)에서 진행됩니다.</span>
+
+    </section>
+
+    <section class="buy">
+      <dl class="blind">
+        <dt>높고 빼어난 중식, 고메루</dt>
+        <dd>고메 풍미가득한 중화짜장</dd>
+        <dd>고메 바삭쫄깃한 탕수육</dd>
+        <dd>고메 바삭쫄깃한 탕수육</dd>
+      </dl>
+      <a href="https://www.cjthemarket.com/pc/plan/planView?plnId=101730" target="_blank">제품 구매하러 가기</a>
+    </section>
+
+    <section class="gallery">
+      <h2 class="blind">탕수육 취향 짤 참여 갤러리</h2>
+      <div class="uploadResult">
+        <ul>
+            <!-- <li><img src="images/noimg.jpg" width="286" onerror="this.src='images/noimg.jpg'"></li> -->
+        </ul>
+        <p></p>
+      </div>
+      <!-- <a href="" class="more" style="display:none;">more</a> -->
+      <a href="" class="more" >more</a>
+    </section>
+  </div>
+
+  <div id="footer">
+    <footer>
+      <div class="blind">
+        <p></p>이벤트 유의 사항</p>
+        <ul>
+          <li>1. 본 이벤트는 중복참여가 가능하며 1인 1 경품 당첨을 기준으로 경품이
+            지급됩니다.</li>
+          <li>2. 부정한 방법으로 응모하거나 불법 IP로 응모 시 참여로 인정되지 않습니다.</li>
+          <li>3. 비정상적인 방법으로 이벤트에 참여한 경우 당첨이 된 이후에도 당첨 취소
+              되며 경품이 지급되지 않습니다.</li>
+          <li>4. 이벤트 당첨자 선정은 추첨을 통해 결정됩니다.</li>
+          <li>5. 당첨자 고지 후 개인정보 회신 일정 이내 답변이 없는 경우 자동으로 당첨이
+              취소됩니다.</li>
+          <li>6. 제공된 개인정보는 경품 배송용 이외에 다른 용도로 사용되지 않으며,
+              이벤트 종료 후 30일 내 폐기됩니다.</li>
+          <li>7. 해당 경품 이미지는 실제 경품과 다를 수 있습니다.</li>
+          <li>8. 이벤트 내용 및 경품 내역은 당사 또는 경품 제공업체의 사정으로 변경될 수
+              있습니다.</li>
+          <li>9. 5만원 초과 경품의 경우 제세공과금 22%는 본인 부담입니다.</li>
+              (제세공과금 납부를 위한 당첨자의 신분증 사본을 요청할 수 있으며 미제출
+              시 당첨이 취소될 수 있습니다.)</li>
+          <li>10. 경품 배송을 위한 개인정보 제출 오류에 따른 오배송은 당사가 책임지지
+                않습니다.</li>
+          <li>11. 당첨자와 경품 수령자는 동일해야 하며 경품양도는 불가능합니다.</li>
+          <li>12. 경품은 당첨자 발표 이후  2주이내 개별연락 후 순차 발송 예정입니다.</li>
+          <li>13. 이벤트 및 경품 문의 : 고메 공식 인스타그램(@CJ.GOURMET) DM</li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+
+    <!--  -->
+    <div id="layer_down" class="pop">
+      <div class="bg"></div>
+      <div class="popup_box">
+          <p><img src="" height="600" /></p>
+          <a href="" class="btn1" download>나만의 짤 다운로드</a>
+          <a href="" class="btn2">다시만들기</a>
+
+          <input type="file" name="uploadFile" id="uploadFile">
+          <a href="" class="btn3">참여완료</a>
+      </div>
+    </div>
+  </form>
+
+  <!--  -->
+  <div id="layer_sns" class="pop">
+    <div class="bg"></div>
+    <div class="popup_box">
+        <a href="" class="close">닫기</a>
+
+        <a href="javascript:shareFacebook()" class="sns_t sns1" data-name="facebook">페이스북</a>
+        <a href="javascript:shareKakao()" class="sns_t sns2" id="btnKakao" data-name="kakao">카카오톡</a>
+        <a href="javascript:shareStoryWeb()" class="sns_t sns3" id="kakaostoryBtn" data-name="kakaostory">카카오스토리</a>
+        <a href="javascript:shareBlog()" class="sns_t sns4" data-name="blog">블로그</a>
+        <a href="javascript:urlShare()" class="sns_t sns5" data-name="cp">URL복사</a>
+    </div>
+  </div>
+
+  <!-- 영상  -->
+  <div id="layer_video" class="pop">
+    <div class="bg"></div>
+    <div class="popup_box">
+        <a href="" class="close">닫기</a>
+
+        <div class="video" id="player">
+
+        </div>
+
+    </div>
+  </div>
+
+  
+  <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+  <script src="js/event.js"></script>
+  <script type="text/javascript">
+    //페이스북 공유
+    function shareFacebook() {
+      var sendUrl = "test.co.kr/cjgourmet"; // 전달할 URL
+      window.open("http://www.facebook.com/sharer/sharer.php?u=" + sendUrl);
+    }
+
+    // 사용할 앱의 JavaScript 키 설정
+    Kakao.init('02cc3d9516d3d9fefa361af4b36cd979');
+
+    //카카오톡 공유
+    function shareKakao() {
+      // 카카오링크 버튼 생성
+      Kakao.Link.createDefaultButton({
+        container: '#btnKakao', // 카카오공유버튼ID
+        objectType: 'feed',
+        content: {
+          title: "cj고메탕수육 이벤트", // 보여질 제목
+          description: "당신의 탕수육 취향은?", // 보여질 설명
+          imageUrl: "", // 콘텐츠 URL
+          link: {
+            mobileWebUrl: "http://test.co.kr/cjgourmet/",
+            webUrl: "http://test.co.kr/cjgourmet/"
+          }
+        }
+      });
+    }
+
+    //카카오스토리 공유
+    function shareStoryWeb() { // 카카오 스토리 공유하기
+      //로컬 서버는 공유하기 불가(?)
+      Kakao.Story.share({
+        url: 'http://test.co.kr/cjgourmet',
+        text: '[cj 고메탕수육] 당신의 탕수육 취향은?',
+      })
+    }
+
+    //네이버 블로그 공유
+    function shareBlog() {
+      //로컬 서버는 공유하기 불가(?)
+      var url = encodeURI(encodeURIComponent('https://www.musinsa.com/app/goods/1706634?loc=goods_rank')); 
+      var title = encodeURI('[cj 고메탕수육] 당신의 탕수육 취향은?');
+      var shareURL = "https://share.naver.com/web/shareView?url="+url+'&title='+title;
+      window.open(shareURL);
+    }
+
+    //URL 복사하기
+    function urlShare() {
+      //url변수와 textarea요소 생성
+      var url = '';
+      var textarea = document.createElement("textarea");
+
+      //body 가장 아래에 textarea 추가
+      document.body.appendChild(textarea);
+
+      //url = 현재주소 입력 후 textarea 설정
+      url = window.document.location.href;
+      textarea.value = url;
+      textarea.select();
+
+      //복사!
+      if(document.execCommand("copy")) {
+        document.body.removeChild(textarea);
+        alert("URL이 복사되었습니다.");
+      }
+    }
+
+
+
+    $(document).ready(function(){
+
+      //form checkbox
+      $("body").on("change", ".check-box :checkbox", function(e) {
+          var oRadio = $("input:checkbox[name='"+e.target.name+"']");
+          oRadio.each(function() {
+          if(this.checked) {
+            $(this).parents('.check-box').addClass('checked');
+          } else {
+            $(this).parents('.check-box').removeClass('checked');
+          }
+          });
+      });
+
+      $("body").on("change", ".radio-box :radio", function(e) {
+        var oRadio = $("input:radio[name='"+e.target.name+"']");
+        oRadio.each(function() {
+          if(this.checked) {
+            $(this).parents('.radio-box').addClass('checked');
+          } else {
+            $(this).parents('.radio-box').removeClass('checked');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

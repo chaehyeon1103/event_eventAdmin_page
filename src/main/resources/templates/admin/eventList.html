@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <title>cj 고메탕수육 관리자 페이지</title>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <!-- Sheet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+  <!--FileSaver savaAs 이용 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+  <style>
+    * {padding:0; margin: 0;}
+    body {background: #f3f3f3; font-size: 14px;}
+    table {border-spacing: 0;}
+    input, select {outline: none;}
+    a {text-decoration: none;}
+    #wrap {width: 100%; height: 100%;}
+    .container {padding: 20px;}
+
+    .boxWrap {position: relative; min-height: 230px; margin-bottom: 20px; border: 1px solid #e9e9e9; border-radius: 5px; background: #fff;}
+    .boxWrap .boxTit {padding: 20px; border-bottom: 1px solid #e9e9e9; font-weight: normal; font-size: 16px;}
+    .boxWrap .boxCont {padding: 20px;}
+    .boxWrap#evList .boxCont {padding-bottom: 70px;}
+    .boxWrap .boxCont .topArea {margin-bottom: 20px;}
+    .boxWrap .boxCont .topArea .sel {margin-bottom: 5px;}
+    .boxWrap .boxCont .topArea .btnExcel {display: inline-block; padding: 5px 20px; border-radius: 5px; background: #24b395; color: #fff;}
+    .boxWrap .boxCont table {width: 100%; border: 1px solid #e9e9e9; border-right: none; text-align: center;}
+    .boxWrap .boxCont table tr th {padding: 10px; font-weight: normal; background: #f8f8f8;}
+    .boxWrap .boxCont table tr td {padding: 10px; font-weight: normal;}
+    .boxWrap .boxCont table thead tr th {border-right: 1px solid #e9e9e9;}
+    .boxWrap .boxCont table tbody tr th,
+    .boxWrap .boxCont table tbody tr td {border-top: 1px solid #e9e9e9; border-right: 1px solid #e9e9e9;}
+    .pagination {position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); font-size: 16px;}
+    .pagination .btnPage {display: inline-block;}
+    .pagination a {padding: 0 3px;}
+    /* #topBtn {position: absolute; right: 2%; bottom: 2%; width: 40px; height: 40px; line-height: 40px; display: block; background: #000; color: #fff; font-size: 10px; text-align: center; border-radius: 5px;} */
+    #topButton {position: fixed; right: 2%; bottom: 50px; display: none; z-index: 999; }
+    #topButtonImg {width: 50px;padding-right: 20px;}
+  </style>
+</head>
+<body>
+  <!-- wrap -->
+  <div id="wrap">
+    <!-- container -->
+    <div class="container">
+      <div>
+        <a href="/api/manager/logout">
+          <h3 class="boxTit">로그아웃</h3>
+        </a>
+      </div>
+      
+<!-- -----------------이벤트 참여인원------------------ -->
+
+      <div class="boxWrap" id="evNum">
+        <h3 class="boxTit">이벤트 참여인원 (총 이벤트 참여수)</h3>
+        <div class="boxCont">
+          <table id="eventCount">
+            <colgroup>
+              <col width="50%">
+              <col width="50%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>참여날짜</th>
+                <th>참여인원</th>
+              </tr>
+            </thead>
+            <tbody id="eventCnt">
+
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+      <div class="boxWrap" id="evNum">
+        <h3 class="boxTit">이벤트 참여인원 (id별 첫 참여날짜 기준 1카운트 참여수)</h3>
+        <div class="boxCont">
+          <table id="eventCountOver">
+            <colgroup>
+              <col width="50%">
+              <col width="50%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>참여날짜</th>
+                <th>참여인원</th>
+              </tr>
+            </thead>
+            <tbody id="eventCntOver">
+
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+
+<!-- -----------------이벤트 참여자 리스트------------------ -->
+
+      <div class="boxWrap" id="evList">
+        <h3 class="boxTit">이벤트 참여자 리스트</h3>
+        <div class="boxCont">
+          <div class="topArea">
+
+            <!-- 검색 form 작성 -->
+            <form action="/api/manager/eventList" method="get" id="searchForm">
+              <div class="sel sel1">
+                <select name="sType" id="sType">
+                  <option value="">선택</option>
+                  <option value="I">이름</option>
+                  <option value="T">텍스트</option>
+                  <option value="F">파일이름</option>
+                </select>
+                <input type="text" id="keyword" name="keyword" placeholder="검색어를 입력해주세요" 
+                  value="">
+                <button type="button" name="" id="searchBtn">검색</button>
+                <button type="button" name="" id="searchReset">검색 리셋하기</button>
+              </div>
+            
+              <div class="sel sel2">
+                <select name="eatType" id="eatType">
+                  <option value="">전체보기</option>
+                  <option value="탕수육의 종결자 갓먹">탕수육의 종결자 갓먹</option>
+                  <option value="찍는거라곤 셀카뿐인 부먹">찍는거라곤 셀카뿐인 부먹</option>
+                  <option value="붓는거라곤 곗돈뿐인 찍먹">붓는거라곤 곗돈뿐인 찍먹</option>
+                  <option value="뱃속에선 다 똑같다는 다먹">뱃속에선 다 똑같다는 다먹</option>
+                  <option value="나는 탕수육에 진심이야 갓먹">나는 탕수육에 진심이야 갓먹</option>
+                  <option value="찌익지이마아 부먹">찌익지이마아 부먹</option>
+                  <option value="바삭함이 생명이지 찍먹">바삭함이 생명이지 찍먹</option>
+                  <option value="아무거나 콜 다먹">아무거나 콜 다먹</option>
+                </select>
+              </div>
+              
+              <div class="sel sel3">
+                <select name="perPage" id="perPage">
+                  <option value="5">리스트보기</option>
+                  <option value="10">10개씩 보기</option>
+                  <option value="20">20개씩 보기</option>
+                  <option value="50">50개씩 보기</option>
+                </select>
+              </div>
+            </form>
+            <a href="/api/manager/excel" class="btnExcel">엑셀 다운로드</a>
+          </div>
+          <table id="eventDetail">
+            <colgroup>
+              <col width="8%">
+              <col width="8%">
+              <col width="13%">
+              <col width="13%">
+              <col width="12%">
+              <col width="10%">
+              <col width="10%">
+              <col width="9%">
+              <col width="9%">
+              <col width="8%">
+            </colgroup>
+            <thead id="eventHead">
+              <tr>
+                <th>NO</th>
+                <th>이름</th>
+                <th>타입</th>
+                <th>텍스트</th>
+                <th>IP주소</th>
+                <th>파일업로드</th>
+                <th>파일이름</th>
+                <th>참여시간</th>
+                <th>삭제시간</th>
+                <th>삭제하기</th>
+              </tr>
+            </thead>
+            <!-- 이벤트 참여자 리스트 -->
+            <tbody id="eventData">
+              
+            </tbody>
+          </table>
+        </div>
+        <!-- 페이징처리 -->
+        <div class="pagination">
+        </div>
+        <div id="topButton" style="cursor: pointer"><img src="/images/topbutton.png" id="topButtonImg"></div>
+      </div>
+    </div>
+    <!-- //container -->
+  </div>
+  <!-- //wrap -->
+
+  <script type="text/javascript">
+
+    //paging함수 (ajax이용)
+    function getPage(pageNum, sType, keyword, eatType, perPage) {
+      $.ajax({
+        url: '/api/manager/indexList',
+        data: {
+        	'pageNum': pageNum,
+        	'sType': sType,
+        	'keyword': keyword,
+        	'eatType': eatType,
+        	'perPage': perPage
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function(data) {
+        	var page = data['page'].cri.pageNum;
+        	var sType = data['page'].cri.stype;
+        	var keyword = data['page'].cri.keyword;
+        	var eatType = data['page'].cri.eatType;
+        	var perPage = data['page'].cri.perPage;
+            
+	        var str = '';
+	        var str2 = '';
+	        var str3 = '';
+	        var str4 = '';
+          
+	      	//이벤트 참여인원
+	        for(var i=0;i<data['cnt2'].length-1;i++){
+	          str4 += '<tr>';
+	          str4 += '<td>'+data['cnt2'][i].regDate+'</td>';
+	          str4 += '<td>'+data['cnt2'][i].cnt+'</td>';
+	          str4 += '</tr>';
+	        }
+	        str4 += '<tr class="total">'
+	        str4 += '<th>총 참여인원</th>'
+
+        	var sum = data['cnt2'].length-1;
+
+        	str4 += '<td>'+data['cnt2'][sum].cnt+'</td></tr>';
+        	
+	        //이벤트 참여인원(id 중복 제거)
+	        for(var i=0;i<data['cnt'].length-1;i++){
+	          str3 += '<tr>';
+	          str3 += '<td>'+data['cnt'][i].regDate+'</td>';
+	          str3 += '<td>'+data['cnt'][i].cnt+'</td>';
+	          str3 += '</tr>';
+	        }
+	        str3 += '<tr class="total">'
+	        str3 += '<th>총 참여인원</th>'
+
+        	var sum = data['cnt'].length-1;
+
+        	str3 += '<td>'+data['cnt'][sum].cnt+'</td></tr>';
+
+	        //검색결과가 없을 경우
+	        if(data['page'].total == 0) {
+	          str += '<tr><td colspan="10">검색 결과가 없습니다.</td></tr>';
+	          alert('검색 결과가 없습니다');
+	        } else {
+
+        		//검색결과 수만큼 no 생성
+        		var no = data['page'].endCount;
+              
+	        	//이벤트 참여자 리스트
+		        $.each(data['list'], function(i, item) {
+		          str += '<tr>';
+		          str += '<td>'+ (no--) +'</td>';
+		          str += '<td>'+item.id+'</td>';
+		          str += '<td>'+item.type+'</td>';
+		          str += '<td>'+item.content+'</td>';
+		          str += '<td>'+item.ipAddress+'</td>';
+		          str += '<td><img src="/api/event/display?fileName='+item.fileName+'" width="215"></td>';
+		          str += '<td>'+item.fileName+'</td>';
+		          str += '<td>'+item.regDate+'</td>';
+	
+		          //이미 삭제되어있다면 삭제버튼 출력 x
+		          if(item.removeTime) {
+		            str += '<td>'+item.removeTime+'</td>';
+		            str += '<td></td>';
+		          } else {
+		            str += '<td></td>';
+		            str += "<td><button name='removeBtn' value='"+item.eno+"' "
+	                +"onclick='javascript:remove("+item.eno+", "+page+", "+'"'+sType+'"'+", "+'"'+keyword+'"'+","+'"'+eatType+'"'+", "+perPage+")'>삭제하기</button></td>";
+		          } 
+		          str += '</tr>';
+		        })
+	          
+	            //페이징
+	            if(data['page'].prev == true) {
+	              var tmpPage = Number(data['page'].startPage) - 1;
+	              str2 += '<a href="javascript:getPage('+tmpPage+', '+"'"+sType+"'"+', '+"'"+keyword+"'"+', '+"'"+eatType+"'"+', '+perPage+')" class="btnPagePrev">이전</a>';
+	            }
+	
+	            str2 += '<div class="btnPage">';
+	
+	            for(var i = data['page'].startPage;i<=data['page'].endPage;i++) {
+	              if(page == i) {
+	                str2 += '<a style="font-weight:bold;">'+i+'</a>';
+	              } else {
+	                str2 += '<a href="javascript:getPage('+i+', '+"'"+sType+"'"+', '+"'"+keyword+"'"+', '+"'"+eatType+"'"+', '+perPage+')" id="goPage">'+i+'</a>';
+	              }
+	            }
+	
+            	str2 += '</div>';
+
+	            if(data['page'].next == true) {
+	              var tmpPage = Number(data['page'].endPage) + 1;
+	              str2 += '<a href="javascript:getPage('+tmpPage+', '+"'"+sType+"'"+', '+"'"+keyword+"'"+', '+"'"+eatType+"'"+', '+perPage+')" class="btnPageNext">다음</a>';
+	            }
+            }
+            $('#eventCntOver').empty();
+            $('#eventCntOver').html(str3);
+            $('#eventCnt').empty();
+            $('#eventCnt').html(str4);
+            $('#eventData').empty();
+            $('#eventData').append(str);
+            $('.pagination').empty();
+            $('.pagination').append(str2);
+        },
+        error: function() {
+          console.log('왜 안될까');
+        }
+      })
+    }
+
+    //삭제하기 버튼 눌렀을 때
+    function remove(eno, pageNum, sType, keyword, eatType, perPage) {
+
+      //정말 삭제할 것인지 확인
+      if(confirm('정말 삭제하시겠습니까?')) {
+        $.ajax({
+          url: '/api/manager/remove',
+          data: {
+            'eno': eno,
+            'pageNum': pageNum,
+            'sType': sType,
+            'keyword': keyword,
+            'eatType': eatType,
+            'perPage': perPage,
+          },
+          type: 'post',
+          success: function(data) {
+            if(data['result'] == true) {
+              alert('삭제되었습니다');
+
+              var page = data['cri'].pageNum;
+              var sType = data['cri'].stype;
+              var keyword = data['cri'].keyword;
+              var eatType = data['cri'].eatType;
+              var perPage = data['cri'].perPage;
+              getPage(page, sType, keyword, eatType, perPage);
+            }
+          }
+        })
+      } else {
+        return false;
+      }
+    }
+
+    $(document).ready(function() {
+    	var currentPage = 1;
+        var sType = $('#sType').val();
+        var keyword = $('#keyword').val();
+        var eatType = $('#eatType').val();
+        var perPage = $('#perPage').val();
+        
+    	(function() {
+    		if(!"${admin}") {
+    			alert("로그인 후 이용가능합니다");
+    			history.back();
+    		}
+    		
+	      //paging 함수 사용
+    		getPage(currentPage, sType, keyword, eatType, perPage);
+    	})();
+
+      // 검색 타입 값변경
+      $('#sType').change(function() {
+        $('#sType').val($(this).val());
+      })
+
+      // 검색 기능
+      $('#searchBtn').click(function(e) {
+        e.preventDefault();
+        	
+        var keyword = $("input[name='keyword']").val();
+        var eatType = $('#eatType').val();
+        var perPage = $('#perPage').val();
+
+        if(!$('#sType').val()) {
+          alert('검색 종류를 선택하세요');
+          return false;
+        }
+
+        if(!keyword) {
+          alert('검색어를 입력하세요');
+          return false;
+        }
+        getPage(currentPage, $('#sType').val(), keyword, eatType, perPage);
+      })
+
+      $("input[name='keyword']").keydown(function(e) {
+    	  
+    	  if(e.keyCode == 13) {
+    		  e.preventDefault();
+    		  
+    		  $('#searchBtn').click();
+    	  }
+    	  
+      })
+      
+      //검색 리셋 기능
+      $('#searchReset').click(function() {
+        $('#sType').val('');
+        $("input[name='keyword']").val('');
+        $('#eatType').val('');
+        $('#perPage').val(5)
+        
+        getPage(currentPage, '', '', '', 5);
+      })
+
+      //먹는 타입 변경
+      $('#eatType').change(function() {
+        var sType = $('#sType').val();
+        var keyword = $("input[name='keyword']").val();
+        $('#eatType').val($(this).val());
+        var perPage = $('#perPage').val();
+
+        getPage(currentPage, sType, keyword, $('#eatType').val(), perPage);
+      })
+
+      // 한 페이지당 로드할 게시물 수 변경
+      $('#perPage').change(function() {
+        var sType = $('#sType').val();
+        var keyword = $("input[name='keyword']").val();
+        var eatType = $('#eatType').val();
+        $('#perPage').val($(this).val());
+        
+        getPage(currentPage, sType, keyword, eatType, $('#perPage').val());
+      })
+
+      //내려가면 button 보이기
+      $(window).scroll(function() {
+        if ($(this).scrollTop() > 500) {
+          $('#topButton').fadeIn();
+        } else {
+          $('#topButton').fadeOut();
+        }
+      });
+      //위로 스크롤하기
+      $("#topButtonImg").click(function() {
+        var offset = $('#eventHead').offset();
+        $('html, body').animate({scrollTop:offset.top}, '300');
+      });
+      
+      $(".btnExcel").click(function(e) {
+    	  e.preventDefault();
+    	  
+    	  $("#searchForm").attr("action", "/api/manager/excel");
+    	  $("#searchForm").submit();
+      })
+    })
+  </script>
+</body>
+</html>
